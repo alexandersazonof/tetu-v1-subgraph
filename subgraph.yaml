@@ -1,23 +1,157 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: undefined
+    name: Controller
     network: matic
     source:
-      address: "0x33b27e0A2506a4A2FBc213a01C51d0451745343a"
+      abi: ControllerContract
+      address: "0x6678814c273d5088114B6E40cC49C8DB04F9bC29"
+      startBlock: 23942243
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ControllerEntity
+        - VaultEntity
+        - StrategyEntity
+      abis:
+        - name: ControllerContract
+          file: ./abis/ControllerContract.json
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
+        - name: VaultContract
+          file: ./abis/SmartVaultContract.json
+        - name: StrategyBalancerBPTContract
+          file: ./abis/strategies/StrategyBalancerBPTContract.json
+      eventHandlers:
+        - event: VaultAndStrategyAdded(address,address)
+          handler: handleVaultAndStrategyAdded
+        - event: ControllerTokenMoved(indexed address,indexed address,uint256)
+          handler: handleControllerTokenMoved
+        - event: DistributorChanged(address)
+          handler: handleDistributorChanged
+        - event: FundKeeperTokenMoved(indexed address,indexed address,uint256)
+          handler: handleFundKeeperTokenMoved
+        - event: HardWorkerAdded(address)
+          handler: handleHardWorkerAdded
+        - event: HardWorkerRemoved(address)
+          handler: handleHardWorkerRemoved
+        - event: Minted(address,uint256,address,address,bool)
+          handler: handleMinted
+        - event: ProxyUpgraded(address,address,address)
+          handler: handleProxyUpgraded
+        - event: SharePriceChangeLog(indexed address,indexed
+            address,uint256,uint256,uint256)
+          handler: handleSharePriceChangeLog
+        - event: StrategyTokenMoved(indexed address,indexed address,uint256)
+          handler: handleStrategyTokenMoved
+        - event: VaultStrategyChanged(address,address,address)
+          handler: handleVaultStrategyChanged
+        - event: WhiteListStatusChanged(address,bool)
+          handler: handleWhiteListStatusChanged
+      file: ./src/ControllerListener.ts
+templates:
+  - kind: ethereum/contract
+    network: matic
+    name: ControllerTemplate
+    source:
       abi: ControllerContract
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Upgraded
+        - ControllerEntity
+        - VaultEntity
+        - StrategyEntity
       abis:
         - name: ControllerContract
           file: ./abis/ControllerContract.json
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
+        - name: VaultContract
+          file: ./abis/SmartVaultContract.json
+        - name: StrategyBalancerBPTContract
+          file: ./abis/strategies/StrategyBalancerBPTContract.json
       eventHandlers:
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
-      file: ./src/controller-contract.ts
+        - event: VaultAndStrategyAdded(address,address)
+          handler: handleVaultAndStrategyAdded
+        - event: ControllerTokenMoved(indexed address,indexed address,uint256)
+          handler: handleControllerTokenMoved
+        - event: DistributorChanged(address)
+          handler: handleDistributorChanged
+        - event: FundKeeperTokenMoved(indexed address,indexed address,uint256)
+          handler: handleFundKeeperTokenMoved
+        - event: HardWorkerAdded(address)
+          handler: handleHardWorkerAdded
+        - event: HardWorkerRemoved(address)
+          handler: handleHardWorkerRemoved
+        - event: Minted(address,uint256,address,address,bool)
+          handler: handleMinted
+        - event: ProxyUpgraded(address,address,address)
+          handler: handleProxyUpgraded
+        - event: SharePriceChangeLog(indexed address,indexed
+            address,uint256,uint256,uint256)
+          handler: handleSharePriceChangeLog
+        - event: StrategyTokenMoved(indexed address,indexed address,uint256)
+          handler: handleStrategyTokenMoved
+        - event: VaultStrategyChanged(address,address,address)
+          handler: handleVaultStrategyChanged
+        - event: WhiteListStatusChanged(address,bool)
+          handler: handleWhiteListStatusChanged
+      file: ./src/ControllerListener.ts
+  - kind: ethereum/contract
+    network: matic
+    name: VaultTemplate
+    source:
+      abi: VaultContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - VaultEntity
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
+        - name: VaultContract
+          file: ./abis/SmartVaultContract.json
+        - name: PriceCalculatorContract
+          file: ./abis/PriceCalculator.json
+      eventHandlers:
+        - event: AddedRewardToken(indexed address)
+          handler: handleAddedRewardToken
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: Invest(uint256)
+          handler: handleInvest
+        - event: RemovedRewardToken(indexed address)
+          handler: handleRemovedRewardToken
+        - event: RewardAdded(address,uint256)
+          handler: handleRewardAdded
+        - event: RewardDenied(indexed address,address,uint256)
+          handler: handleRewardDenied
+        - event: RewardMovedToController(address,uint256)
+          handler: handleRewardMovedToController
+        - event: RewardPaid(indexed address,address,uint256)
+          handler: handleRewardPaid
+        - event: RewardRecirculated(indexed address,uint256)
+          handler: handleRewardRecirculated
+        - event: RewardSentToController(indexed address,uint256)
+          handler: handleRewardSentToController
+        - event: Staked(indexed address,uint256)
+          handler: handleStaked
+        - event: StrategyAnnounced(address,uint256)
+          handler: handleStrategyAnnounced
+        - event: StrategyChanged(address,address)
+          handler: handleStrategyChanged
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+        - event: Withdrawn(indexed address,uint256)
+          handler: handleWithdrawn
+      file: ./src/VaultListener.ts

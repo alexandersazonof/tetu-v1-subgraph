@@ -1,5 +1,117 @@
-type ExampleEntity @entity {
+
+type ControllerEntity @entity {
+
   id: ID!
-  count: BigInt!
-  implementation: Bytes! # address
+
+  VERSION: String!
+  oldAddress: String!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultEntity @entity {
+
+  id: ID!
+
+  decimals: Int!
+  name: String!
+  symbol: String!
+
+  active: Boolean!
+  rewardTokens: [TokenEntity!]!
+  underlying: TokenEntity!
+  strategy: StrategyEntity!
+
+  lastShareTimestamp: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type StrategyEntity @entity {
+
+  id: ID!
+
+  platform: Int!
+  poolId: String!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TokenEntity @entity {
+
+  id: ID!
+
+  decimals: Int!
+  name: String!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TvlEntity @entity(immutable: true) {
+
+  id: ID!
+
+  value: BigDecimal!
+  price: BigInt!
+  totalSupply: BigInt!
+
+  vault: VaultEntity!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type SharePriceChangeLogEntity @entity(immutable: true) {
+
+  id: ID!
+
+  vault: VaultEntity!
+  strategy: StrategyEntity!
+
+  oldSharePrice: BigInt!
+  newSharePrice: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type ApyAutoCompoundEntity @entity(immutable: true) {
+
+  id: ID!
+
+  apy: BigDecimal!
+  apr: BigDecimal!
+
+  vault: VaultEntity!
+
+  differentSharePrice: BigInt!
+  differentShareTimestamp: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type ApyRewardEntity @entity(immutable: true) {
+
+  id: ID!
+
+  apy: BigDecimal!
+  apr: BigDecimal!
+
+  vault: VaultEntity!
+
+  rewardAmount: BigInt!
+  rewardToken: String!
+  rewardRate: BigInt!
+  rewardPeriodFinish: BigInt!
+  rewardTokenPrice: BigInt!
+
+  tvl: TvlEntity!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
 }
