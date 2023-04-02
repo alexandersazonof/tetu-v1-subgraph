@@ -24,6 +24,8 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
 
     vaultEntity.createAtBlock = block.number;
     vaultEntity.timestamp = block.timestamp;
+    vaultEntity.userUniqueCount = BigInt.zero()
+    vaultEntity.userActiveCount = BigInt.zero()
     vaultEntity.save();
 
     VaultTemplate.create(address);

@@ -12,6 +12,7 @@ import {
 } from "../generated/templates/VaultTemplate/VaultContract";
 import { loadTvl } from "./types/Tvl";
 import { createApyReward } from "./types/ApyReward";
+import { createUniqueUser, loadActiveUser } from "./types/User";
 
 // ******************************************************************************************************
 //             TRANSFER
@@ -29,11 +30,33 @@ export function handleRewardAdded(event: RewardAdded): void  {
   createApyReward(event.address, event.params.reward, event.params.rewardToken, event.block)
 }
 
-export function handleAddedRewardToken(event: AddedRewardToken): void  {
+// ******************************************************************************************************
+//             DEPOSIT
+// ******************************************************************************************************
+
+export function handleDeposit(event: Deposit): void  {
+  createUniqueUser(event.address, event.params.beneficiary, event.transaction, event.block)
+  loadActiveUser(event.address, event.params.beneficiary, event.transaction, event.block)
+}
+
+// ******************************************************************************************************
+//             WITHDRAW
+// ******************************************************************************************************
+
+export function handleWithdraw(event: Withdraw): void  {
+  loadActiveUser(event.address, event.params.beneficiary, event.transaction, event.block)
 
 }
 
-export function handleDeposit(event: Deposit): void  {
+// ******************************************************************************************************
+//             WITHDRAWN
+// ******************************************************************************************************
+
+export function handleWithdrawn(event: Withdrawn): void  {
+  loadActiveUser(event.address, event.params.user, event.transaction, event.block)
+}
+
+export function handleAddedRewardToken(event: AddedRewardToken): void  {
 
 }
 
@@ -74,13 +97,5 @@ export function handleStrategyAnnounced(event: StrategyAnnounced): void  {
 }
 
 export function handleStrategyChanged(event: StrategyChanged): void  {
-
-}
-
-export function handleWithdraw(event: Withdraw): void  {
-
-}
-
-export function handleWithdrawn(event: Withdrawn): void  {
 
 }

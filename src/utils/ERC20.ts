@@ -19,3 +19,9 @@ export function fetchSymbol(address: Address): string {
   const trySymbol = erc20.try_symbol();
   return trySymbol.reverted ? UNDEFINED : trySymbol.value;
 }
+
+export function fetchBalance(address: Address, value: Address): BigInt {
+  const erc20 = ERC20.bind(address)
+  const tryBalance = erc20.try_balanceOf(value)
+  return tryBalance.reverted ? BigInt.zero() : tryBalance.value
+}

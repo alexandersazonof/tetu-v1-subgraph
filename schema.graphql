@@ -23,6 +23,8 @@ type VaultEntity @entity {
   strategy: StrategyEntity!
 
   lastShareTimestamp: BigInt!
+  userUniqueCount: BigInt!
+  userActiveCount: BigInt!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -110,6 +112,65 @@ type ApyRewardEntity @entity(immutable: true) {
   rewardTokenPrice: BigInt!
 
   tvl: TvlEntity!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultUserEntity @entity {
+
+  "vault-user"
+  id: ID!
+
+  vault: VaultEntity!
+  user: String!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultUniqueUserCountEntity @entity(immutable: true) {
+
+  "vault-user-tx"
+  id: ID!
+
+  vault: VaultEntity!
+  value: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultUniqueUserEntity @entity(immutable: true) {
+
+  "vault-user"
+  id: ID!
+
+  vault: VaultEntity!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultActiveUserCountEntity @entity(immutable: true) {
+
+  "vault-user-tx"
+  id: ID!
+
+  vault: VaultEntity!
+  value: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultActiveUserEntity @entity {
+
+  "vault-user"
+  id: ID!
+
+  vault: VaultEntity!
+  active: Boolean!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
