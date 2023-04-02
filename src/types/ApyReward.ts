@@ -29,7 +29,7 @@ export function createApyReward(
     const value = rewardRate
       .divDecimal(pow(BD_TEN, vault.decimals))
       .times(
-        rewardTokenPrice.divDecimal(pow(BD_TEN, fetchDecimals(rewardToken)))
+        rewardTokenPrice.divDecimal(pow(BD_TEN, fetchDecimals(rewardToken).toI32()))
       )
       .times(period)
 

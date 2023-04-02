@@ -4,6 +4,7 @@ import { fetchDecimals, fetchName, fetchSymbol } from "../utils/ERC20";
 import { VaultContract } from "../../generated/Controller/VaultContract";
 import { loadOrCreateToken } from "./Token";
 import { loadOrCreateStrategy } from "./Strategy";
+import { VaultTemplate } from "../../generated/templates";
 
 
 export function loadOrCreateVault(address: Address, block: ethereum.Block): VaultEntity {
@@ -11,12 +12,11 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
   if (vaultEntity == null) {
     vaultEntity = new VaultEntity(address.toHex());
 
-    vaultEntity.decimals = fetchDecimals(address);
+    vaultEntity.decimals = fetchDecimals(address).toI32();
     vaultEntity.name = fetchName(address);
     vaultEntity.symbol = fetchSymbol(address);
 
     vaultEntity.active = true;
-    vaultEntity.rewardTokens;
     vaultEntity.underlying = loadOrCreateToken(fetchUnderlying(address), block).id;
     vaultEntity.strategy = loadOrCreateStrategy(fetchStrategy(address), block).id;
 
@@ -25,6 +25,8 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
     vaultEntity.createAtBlock = block.number;
     vaultEntity.timestamp = block.timestamp;
     vaultEntity.save();
+
+    VaultTemplate.create(address);
   }
   return vaultEntity;
 }

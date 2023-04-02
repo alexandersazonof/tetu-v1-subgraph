@@ -17,7 +17,7 @@ import { createApyReward } from "./types/ApyReward";
 //             TRANSFER
 // ******************************************************************************************************
 
-export function handleTransfer(event: Transfer) {
+export function handleTransfer(event: Transfer): void  {
   loadTvl(event.address, event.block)
 }
 
@@ -25,62 +25,62 @@ export function handleTransfer(event: Transfer) {
 //             REWARD ADDED
 // ******************************************************************************************************
 
-export function handleRewardAdded(event: RewardAdded) {
+export function handleRewardAdded(event: RewardAdded): void  {
   createApyReward(event.address, event.params.reward, event.params.rewardToken, event.block)
 }
 
-export function handleAddedRewardToken(event: AddedRewardToken) {
+export function handleAddedRewardToken(event: AddedRewardToken): void  {
 
 }
 
-export function handleDeposit(event: Deposit) {
+export function handleDeposit(event: Deposit): void  {
 
 }
 
-export function handleInvest(event: Invest) {
+export function handleInvest(event: Invest): void  {
 
 }
 
-export function handleRemovedRewardToken(event: RemovedRewardToken) {
+export function handleRemovedRewardToken(event: RemovedRewardToken): void  {
 
 }
 
-export function handleRewardDenied(event: RewardDenied) {
+export function handleRewardDenied(event: RewardDenied): void  {
 
 }
 
-export function handleRewardMovedToController(event: RewardMovedToController) {
+export function handleRewardMovedToController(event: RewardMovedToController): void  {
 
 }
 
-export function handleRewardPaid(event: RewardPaid) {
+export function handleRewardPaid(event: RewardPaid): void  {
 
 }
 
-export function handleRewardRecirculated(event: RewardRecirculated) {
+export function handleRewardRecirculated(event: RewardRecirculated): void  {
 
 }
 
-export function handleRewardSentToController(event: RewardSentToController) {
+export function handleRewardSentToController(event: RewardSentToController): void  {
 
 }
 
-export function handleStaked(event: Staked) {
+export function handleStaked(event: Staked): void  {
 
 }
 
-export function handleStrategyAnnounced(event: StrategyAnnounced) {
+export function handleStrategyAnnounced(event: StrategyAnnounced): void  {
 
 }
 
-export function handleStrategyChanged(event: StrategyChanged) {
+export function handleStrategyChanged(event: StrategyChanged): void  {
 
 }
 
-export function handleWithdraw(event: Withdraw) {
+export function handleWithdraw(event: Withdraw): void  {
 
 }
 
-export function handleWithdrawn(event: Withdrawn) {
+export function handleWithdrawn(event: Withdrawn): void  {
 
 }

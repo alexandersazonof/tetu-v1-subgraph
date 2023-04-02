@@ -6,7 +6,6 @@ import {
   VaultAndStrategyAdded, VaultStrategyChanged, WhiteListStatusChanged
 } from "../generated/Controller/ControllerContract";
 import { loadOrCreateController } from "./types/Controller";
-import { ControllerTemplate } from "../generated/templates";
 import { loadOrCreateVault } from "./types/Vault";
 import { createSharePriceChangeLog } from "./types/SharePriceChangeLog";
 import { BigInt } from "@graphprotocol/graph-ts";
@@ -28,10 +27,7 @@ export function handleVaultAndStrategyAdded(event: VaultAndStrategyAdded): void 
 // ******************************************************************************************************
 
 export function handleProxyUpgraded(event: ProxyUpgraded): void {
-  const controller = loadOrCreateController(event.params.newLogic, event.block);
-  controller.oldAddress = event.address.toString()
-  controller.save();
-  ControllerTemplate.create(event.params.newLogic);
+  // TODO logic
 }
 
 // ******************************************************************************************************
@@ -46,7 +42,10 @@ export function handleSharePriceChangeLog(event: SharePriceChangeLog): void {
 
   if (sharePrice.oldSharePrice != sharePrice.newSharePrice && vault.lastShareTimestamp.ge(BigInt.zero())) {
     const differentShareTimestamp = event.params.timestamp.minus(vault.lastShareTimestamp)
-    const differentSharePrice = event.params.newSharePrice.minus(event.params.oldSharePrice)
+    let differentSharePrice = event.params.newSharePrice.minus(event.params.oldSharePrice)
+    if (event.params.newSharePrice.lt(event.params.oldSharePrice)) {
+      differentSharePrice = event.params.oldSharePrice.minus(event.params.newSharePrice)
+    }
 
     createApyAutoCompound(vault, differentSharePrice, differentShareTimestamp, event.block)
   }

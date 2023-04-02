@@ -1,4 +1,4 @@
-import { Address, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { StrategyEntity } from "../../generated/schema";
 import { StrategyBalancerBPTContract } from "../../generated/templates/ControllerTemplate/StrategyBalancerBPTContract";
 import { UNDEFINED } from "../utils/Constant";
@@ -18,10 +18,10 @@ export function loadOrCreateStrategy(address: Address, block: ethereum.Block): S
   return strategy;
 }
 
-function fetchPlatform(address: Address): number {
+function fetchPlatform(address: Address): BigInt {
   const strategy = StrategyBalancerBPTContract.bind(address)
   const tryPlatform = strategy.try_platform()
-  return tryPlatform.reverted ? 0 : tryPlatform.value
+  return tryPlatform.reverted ? BigInt.zero() : BigInt.fromI32(tryPlatform.value)
 }
 
 function fetchPoolId(address: Address): string {

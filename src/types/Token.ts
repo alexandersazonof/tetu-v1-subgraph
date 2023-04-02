@@ -7,7 +7,7 @@ export function loadOrCreateToken(address: Address, block: ethereum.Block): Toke
   if (token == null) {
     token = new TokenEntity(address.toHex());
 
-    token.decimals = fetchDecimals(address)
+    token.decimals = fetchDecimals(address).toI32()
     token.name = fetchName(address)
 
     token.createAtBlock = block.number;

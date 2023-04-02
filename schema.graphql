@@ -19,7 +19,6 @@ type VaultEntity @entity {
   symbol: String!
 
   active: Boolean!
-  rewardTokens: [TokenEntity!]!
   underlying: TokenEntity!
   strategy: StrategyEntity!
 
@@ -33,7 +32,7 @@ type StrategyEntity @entity {
 
   id: ID!
 
-  platform: Int!
+  platform: BigInt!
   poolId: String!
 
   timestamp: BigInt!

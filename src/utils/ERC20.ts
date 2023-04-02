@@ -1,11 +1,11 @@
-import { Address } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { ERC20 } from "../../generated/Controller/ERC20";
 import { UNDEFINED } from "./Constant";
 
-export function fetchDecimals(address: Address): number {
+export function fetchDecimals(address: Address): BigInt {
   const erc20 = ERC20.bind(address)
   const tryDecimals = erc20.try_decimals()
-  return tryDecimals.reverted ? 0 : tryDecimals.value;
+  return tryDecimals.reverted ? BigInt.zero() : BigInt.fromI32(tryDecimals.value);
 }
 
 export function fetchName(address: Address): string {
