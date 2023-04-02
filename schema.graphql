@@ -5,6 +5,14 @@ type ControllerEntity @entity {
 
   VERSION: String!
   oldAddress: String!
+  bookkeeper: BookkeeperEntity!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type BookkeeperEntity @entity {
+  id: ID!
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -36,7 +44,7 @@ type StrategyEntity @entity {
 
   platform: BigInt!
   poolId: String!
-
+#  vault: VaultEntity! @derivedFrom(field: "strategy")
   timestamp: BigInt!
   createAtBlock: BigInt!
 }
@@ -171,6 +179,32 @@ type VaultActiveUserEntity @entity {
 
   vault: VaultEntity!
   active: Boolean!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type StrategyEarnedEntity @entity {
+
+  id: ID!
+
+  strategy: StrategyEntity!
+  amount: BigInt!
+  tetuPrice: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type UserEarnedEntity @entity {
+
+  id: ID!
+
+  user: String!
+  vault: VaultEntity!
+  token: TokenEntity!
+  amount: BigInt!
+  tokenPrice: BigInt!
 
   timestamp: BigInt!
   createAtBlock: BigInt!

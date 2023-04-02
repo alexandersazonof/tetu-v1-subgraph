@@ -20,4 +20,12 @@ export function getPriceCalculator(): Address {
   return Address.zero()
 }
 
-
+export function getTetuToken(): Address {
+  if (dataSource.network() == 'mainnet') {
+    return Address.fromString('0x4f851750a3e6f80f1E1f89C67B56960Bfc29A934')
+  } else if (dataSource.network() == 'matic') {
+    return Address.fromString('0x255707B70BF90aa112006E1b07B9AeA6De021424')
+  }
+  log.warning("NO TETU TOKEN ON NETWORK {}", [dataSource.network()]);
+  return Address.zero()
+}

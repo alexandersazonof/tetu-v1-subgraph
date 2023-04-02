@@ -106,3 +106,29 @@ templates:
         - event: Withdrawn(indexed address,uint256)
           handler: handleWithdrawn
       file: ./src/VaultListener.ts
+  - kind: ethereum/contract
+    network: matic
+    name: BookkeeperTemplate
+    source:
+      abi: BookkeeperContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - VaultEntity
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
+        - name: VaultContract
+          file: ./abis/SmartVaultContract.json
+        - name: PriceCalculatorContract
+          file: ./abis/PriceCalculator.json
+        - name: BookkeeperContract
+          file: ./abis/Bookkeeper.json
+      eventHandlers:
+        - event: RegisterStrategyEarned(indexed address,uint256)
+          handler: handleRegisterStrategyEarned
+        - event: RegisterUserEarned(indexed address,address,address,uint256)
+          handler: handlerRegisterUserEarned
+      file: ./src/BookkeeperListener.ts

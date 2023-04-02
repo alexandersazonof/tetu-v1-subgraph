@@ -32,7 +32,7 @@ function createUniqueCountUser(
   block: ethereum.Block
 ): void {
   const vault = loadOrCreateVault(vaultAddress, block)
-  const id = `${vault.id}-${userAddress.toHex()}-${tx.hash}`
+  const id = `${vault.id}-${userAddress.toHex()}-${tx.hash.toHex()}`
   let userCount = VaultUniqueUserCountEntity.load(id)
   if (userCount == null) {
     vault.userUniqueCount = vault.userUniqueCount.plus(BigInt.fromI32(1))
@@ -91,7 +91,7 @@ function createActiveUserCount(
   plus: boolean
 ): void {
   const vault = loadOrCreateVault(vaultAddress, block)
-  const id = `${vault.id}-${userAddress.toHex()}-${tx.hash}`
+  const id = `${vault.id}-${userAddress.toHex()}-${tx.hash.toHex()}`
   let userCount = VaultUniqueUserCountEntity.load(id)
   if (userCount == null) {
     vault.userUniqueCount = plus
