@@ -28,7 +28,7 @@ export function loadTvl(address: Address, block: ethereum.Block): TvlEntity {
     }
 
     tvlEntity = new TvlEntity(id);
-    tvlEntity.vault = address.toString()
+    tvlEntity.vault = vault.id
 
 
     tvlEntity.totalSupply = totalSupply

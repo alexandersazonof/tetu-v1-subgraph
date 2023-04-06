@@ -26,6 +26,8 @@ dataSources:
           file: ./abis/SmartVaultContract.json
         - name: StrategyBalancerBPTContract
           file: ./abis/strategies/StrategyBalancerBPTContract.json
+        - name: StrategySplitterContract
+          file: ./abis/strategies/StrategySplitter.json
       eventHandlers:
         - event: VaultAndStrategyAdded(address,address)
           handler: handleVaultAndStrategyAdded
@@ -72,6 +74,10 @@ templates:
           file: ./abis/SmartVaultContract.json
         - name: PriceCalculatorContract
           file: ./abis/PriceCalculator.json
+        - name: StrategyBalancerBPTContract
+          file: ./abis/strategies/StrategyBalancerBPTContract.json
+        - name: StrategySplitterContract
+          file: ./abis/strategies/StrategySplitter.json
       eventHandlers:
         - event: AddedRewardToken(indexed address)
           handler: handleAddedRewardToken
@@ -126,9 +132,43 @@ templates:
           file: ./abis/PriceCalculator.json
         - name: BookkeeperContract
           file: ./abis/Bookkeeper.json
+        - name: StrategyBalancerBPTContract
+          file: ./abis/strategies/StrategyBalancerBPTContract.json
+        - name: StrategySplitterContract
+          file: ./abis/strategies/StrategySplitter.json
       eventHandlers:
         - event: RegisterStrategyEarned(indexed address,uint256)
           handler: handleRegisterStrategyEarned
         - event: RegisterUserEarned(indexed address,address,address,uint256)
           handler: handlerRegisterUserEarned
       file: ./src/BookkeeperListener.ts
+  - kind: ethereum/contract
+    network: matic
+    name: StrategySplitterTemplate
+    source:
+      abi: StrategySplitterContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - StrategyEntity
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20Contract.json
+        - name: VaultContract
+          file: ./abis/SmartVaultContract.json
+        - name: PriceCalculatorContract
+          file: ./abis/PriceCalculator.json
+        - name: BookkeeperContract
+          file: ./abis/Bookkeeper.json
+        - name: StrategyBalancerBPTContract
+          file: ./abis/strategies/StrategyBalancerBPTContract.json
+        - name: StrategySplitterContract
+          file: ./abis/strategies/StrategySplitter.json
+      eventHandlers:
+        - event: StrategyAdded(address)
+          handler: handleStrategyAdded
+        - event: StrategyRemoved(address)
+          handler: handleStrategyRemoved
+      file: ./src/StrategySplitterListener.ts

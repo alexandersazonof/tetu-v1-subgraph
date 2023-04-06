@@ -1,6 +1,11 @@
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { loadOrCreateVault } from "./Vault";
-import { VaultActiveUserEntity, VaultUniqueUserCountEntity, VaultUniqueUserEntity } from "../../generated/schema";
+import {
+  VaultActiveUserCountEntity,
+  VaultActiveUserEntity,
+  VaultUniqueUserCountEntity,
+  VaultUniqueUserEntity
+} from "../../generated/schema";
 import { fetchBalance } from "../utils/ERC20";
 
 export function createUniqueUser(
@@ -35,13 +40,14 @@ function createUniqueCountUser(
   const id = `${vault.id}-${userAddress.toHex()}-${tx.hash.toHex()}`
   let userCount = VaultUniqueUserCountEntity.load(id)
   if (userCount == null) {
-    vault.userUniqueCount = vault.userUniqueCount.plus(BigInt.fromI32(1))
+    const value = BigInt.fromI32(vault.userUniqueCount.toI32() + 1)
+    vault.userUniqueCount = value
     vault.save()
 
     userCount = new VaultUniqueUserCountEntity(id);
 
     userCount.vault = vault.id
-    userCount.value = vault.userUniqueCount
+    userCount.value = value
 
     userCount.timestamp = block.timestamp
     userCount.createAtBlock = block.number
@@ -92,7 +98,7 @@ function createActiveUserCount(
 ): void {
   const vault = loadOrCreateVault(vaultAddress, block)
   const id = `${vault.id}-${userAddress.toHex()}-${tx.hash.toHex()}`
-  let userCount = VaultUniqueUserCountEntity.load(id)
+  let userCount = VaultActiveUserCountEntity.load(id)
   if (userCount == null) {
     vault.userUniqueCount = plus
       ? vault.userActiveCount.plus(BigInt.fromI32(1))
@@ -100,7 +106,7 @@ function createActiveUserCount(
 
     vault.save()
 
-    userCount = new VaultUniqueUserCountEntity(id);
+    userCount = new VaultActiveUserCountEntity(id);
 
     userCount.vault = vault.id
     userCount.value = vault.userUniqueCount

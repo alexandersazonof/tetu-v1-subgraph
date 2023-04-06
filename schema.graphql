@@ -44,6 +44,8 @@ type StrategyEntity @entity {
 
   platform: BigInt!
   poolId: String!
+  name: String!
+  strategies: [StrategyEntity!]!
 #  vault: VaultEntity! @derivedFrom(field: "strategy")
   timestamp: BigInt!
   createAtBlock: BigInt!

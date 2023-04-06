@@ -8,7 +8,7 @@ export const SECONDS_OF_YEAR = BigDecimal.fromString('31557600');
 export const YEAR_PERIOD = BigDecimal.fromString('365')
 export const BD_ONE = BigDecimal.fromString('1')
 
-
+export const STRATEGY_SPLITTER_PLATFORM = '24';
 
 export function getPriceCalculator(): Address {
   if (dataSource.network() == 'mainnet') {
