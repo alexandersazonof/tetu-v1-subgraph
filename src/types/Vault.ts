@@ -1,10 +1,10 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { VaultEntity } from "../../generated/schema";
 import { fetchDecimals, fetchName, fetchSymbol } from "../utils/ERC20";
 import { VaultContract } from "../../generated/Controller/VaultContract";
 import { loadOrCreateToken } from "./Token";
-import { loadOrCreateStrategy } from "./Strategy";
 import { VaultTemplate } from "../../generated/templates";
+import { UNDEFINED } from "../utils/Constant";
 
 
 export function loadOrCreateVault(address: Address, block: ethereum.Block): VaultEntity {
@@ -18,7 +18,7 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
 
     vaultEntity.active = true;
     vaultEntity.underlying = loadOrCreateToken(fetchUnderlying(address), block).id;
-    vaultEntity.strategy = loadOrCreateStrategy(fetchStrategy(address), block).id;
+    // vaultEntity.strategy = loadOrCreateStrategy(fetchStrategy(address), block).id;
 
     vaultEntity.lastShareTimestamp = BigInt.zero()
 

@@ -4,6 +4,7 @@ import { StrategyBalancerBPTContract } from "../../generated/templates/Controlle
 import { STRATEGY_SPLITTER_PLATFORM, UNDEFINED } from "../utils/Constant";
 import { StrategySplitterContract } from "../../generated/Controller/StrategySplitterContract";
 import { StrategySplitterTemplate } from "../../generated/templates";
+import { loadOrCreateVault } from "./Vault";
 
 export function loadOrCreateStrategy(address: Address, block: ethereum.Block): StrategyEntity {
   let strategy = StrategyEntity.load(address.toHex())
@@ -17,8 +18,9 @@ export function loadOrCreateStrategy(address: Address, block: ethereum.Block): S
     strategy.timestamp = block.timestamp;
     strategy.name = fetchName(address)
     strategy.strategies = []
+    strategy.vault = loadOrCreateVault(fetchVault(address), block).id
 
-    if (strategy.poolId == STRATEGY_SPLITTER_PLATFORM) {
+    if (strategy.platform.equals(STRATEGY_SPLITTER_PLATFORM)) {
       updateStrategy(strategy, block)
       StrategySplitterTemplate.create(address);
     }
@@ -59,4 +61,10 @@ export function updateStrategy(strategy: StrategyEntity, block: ethereum.Block):
   }
   strategy.strategies = array
   strategy.save()
+}
+
+export function fetchVault(address: Address): Address {
+  const strategy = StrategySplitterContract.bind(address)
+  const tryVault = strategy.try_vault()
+  return tryVault.reverted ? Address.zero() : tryVault.value
 }

@@ -2,7 +2,7 @@ import {
   RegisterStrategyEarned,
   RegisterUserEarned
 } from "../generated/templates/BookkeeperTemplate/BookkeeperContract";
-import { loadOrCreateStrategy } from "./types/Strategy";
+import { fetchVault, loadOrCreateStrategy } from "./types/Strategy";
 import { StrategyEarnedEntity, UserEarnedEntity } from "../generated/schema";
 import { getTokenPrice } from "./utils/PriceUtils";
 import { getTetuToken } from "./utils/Constant";
@@ -23,7 +23,7 @@ export function handleRegisterStrategyEarned(event: RegisterStrategyEarned): voi
     strategyEarned.amount = event.params.amount
     strategyEarned.strategy = loadOrCreateStrategy(event.params.strategy, event.block).id
     strategyEarned.tetuPrice = getTokenPrice(getTetuToken())
-
+    strategyEarned.vault = loadOrCreateVault(fetchVault(event.params.strategy), event.block).id
     strategyEarned.createAtBlock = event.block.number
     strategyEarned.timestamp = event.block.timestamp
     strategyEarned.save()

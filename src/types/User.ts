@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, dataSource, ethereum } from "@graphprotocol/graph-ts";
 import { loadOrCreateVault } from "./Vault";
 import {
   VaultActiveUserCountEntity,
@@ -14,14 +14,15 @@ export function createUniqueUser(
   tx: ethereum.Transaction,
   block: ethereum.Block
   ): VaultUniqueUserEntity {
-  const id = `${vaultAddress.toHex()}-${userAddress.toHex()}`
+  const vault = loadOrCreateVault(vaultAddress, block)
+  const id = `${vault.id}-${userAddress.toHex()}`
   let userUnique = VaultUniqueUserEntity.load(id)
   if (userUnique == null) {
     createUniqueCountUser(vaultAddress, userAddress, tx, block)
 
     userUnique = new VaultUniqueUserEntity(id)
 
-    userUnique.vault = vaultAddress.toHex()
+    userUnique.vault = vault.id
 
     userUnique.timestamp = block.timestamp
     userUnique.createAtBlock = block.number
@@ -41,8 +42,6 @@ function createUniqueCountUser(
   let userCount = VaultUniqueUserCountEntity.load(id)
   if (userCount == null) {
     const value = BigInt.fromI32(vault.userUniqueCount.toI32() + 1)
-    vault.userUniqueCount = value
-    vault.save()
 
     userCount = new VaultUniqueUserCountEntity(id);
 
@@ -52,6 +51,10 @@ function createUniqueCountUser(
     userCount.timestamp = block.timestamp
     userCount.createAtBlock = block.number
     userCount.save()
+
+
+    vault.userUniqueCount = value
+    vault.save()
   }
 }
 
@@ -61,30 +64,30 @@ export function loadActiveUser(
   tx: ethereum.Transaction,
   block: ethereum.Block
 ): VaultActiveUserEntity {
-  const id = `${vaultAddress.toHex()}-${userAddress.toHex()}`
+  const vault = loadOrCreateVault(vaultAddress, block)
+  const id = `${vault.id}-${userAddress.toHex()}`
   let userActive = VaultActiveUserEntity.load(id)
   if (userActive == null) {
     createActiveUserCount(vaultAddress, userAddress, tx, block, true)
     userActive = new VaultActiveUserEntity(id)
 
     userActive.active = true
-    userActive.vault = vaultAddress.toHex()
+    userActive.vault = vault.id
     userActive.timestamp = block.timestamp
     userActive.createAtBlock = block.number
     userActive.save()
+  } else {
+    const balance = fetchBalance(vaultAddress, userAddress)
+    if (balance.equals(BigInt.zero())) {
+      createActiveUserCount(vaultAddress, userAddress, tx, block, false)
+      userActive.active = false
+      userActive.save()
+    } else if (!userActive.active && balance.gt(BigInt.zero())) {
+      createActiveUserCount(vaultAddress, userAddress, tx, block, true)
+      userActive.active = true
+      userActive.save()
+    }
   }
-
-  const balance = fetchBalance(vaultAddress, userAddress)
-  if (balance.equals(BigInt.zero())) {
-    createActiveUserCount(vaultAddress, userAddress, tx, block, false)
-    userActive.active = false
-    userActive.save()
-  } else if (!userActive.active && balance.gt(BigInt.zero())) {
-    createActiveUserCount(vaultAddress, userAddress, tx, block, true)
-    userActive.active = true
-    userActive.save()
-  }
-
 
   return userActive
 }
@@ -100,11 +103,9 @@ function createActiveUserCount(
   const id = `${vault.id}-${userAddress.toHex()}-${tx.hash.toHex()}`
   let userCount = VaultActiveUserCountEntity.load(id)
   if (userCount == null) {
-    vault.userUniqueCount = plus
+    const value = plus
       ? vault.userActiveCount.plus(BigInt.fromI32(1))
       : vault.userActiveCount.minus(BigInt.fromI32(1))
-
-    vault.save()
 
     userCount = new VaultActiveUserCountEntity(id);
 
@@ -114,5 +115,8 @@ function createActiveUserCount(
     userCount.timestamp = block.timestamp
     userCount.createAtBlock = block.number
     userCount.save()
+
+    vault.userActiveCount = value
+    vault.save()
   }
 }
