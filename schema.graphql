@@ -68,6 +68,7 @@ type TvlEntity @entity(immutable: true) {
   value: BigDecimal!
   price: BigInt!
   totalSupply: BigInt!
+  ppfs: BigInt!
 
   vault: VaultEntity!
 
@@ -207,6 +208,18 @@ type UserEarnedEntity @entity {
   token: TokenEntity!
   amount: BigInt!
   tokenPrice: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultLogHistoryEntity @entity {
+
+  id: ID!
+
+  vault:VaultEntity!
+
+  active: Boolean!
 
   timestamp: BigInt!
   createAtBlock: BigInt!

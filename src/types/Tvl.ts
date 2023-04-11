@@ -1,8 +1,8 @@
 import { Address, BigDecimal, BigInt, dataSource, ethereum, log } from "@graphprotocol/graph-ts";
 import { TvlEntity } from "../../generated/schema";
-import { fetchTotalSupply, loadOrCreateVault } from "./Vault";
+import { fetchSharePrice, fetchTotalSupply, loadOrCreateVault } from "./Vault";
 import { getTokenPrice } from "../utils/PriceUtils";
-import { BD_TEN } from "../utils/Constant";
+import { BD_18, BD_TEN } from "../utils/Constant";
 import { pow } from "../utils/MathUtils";
 
 export function loadTvl(address: Address, block: ethereum.Block): TvlEntity {
@@ -13,6 +13,7 @@ export function loadTvl(address: Address, block: ethereum.Block): TvlEntity {
   if (tvlEntity == null) {
     const totalSupply = fetchTotalSupply(address)
     const price = getTokenPrice(address)
+    const ppfs = fetchSharePrice(address)
     let value = BigDecimal.zero()
 
     if (!price.equals(BigInt.zero())) {
@@ -21,6 +22,10 @@ export function loadTvl(address: Address, block: ethereum.Block): TvlEntity {
           .divDecimal(pow(BD_TEN, vault.decimals))
           .times(
             price
+              .divDecimal(BD_18)
+          )
+          .times(
+            ppfs
               .divDecimal(pow(BD_TEN, vault.decimals))
           )
     } else {
@@ -34,6 +39,7 @@ export function loadTvl(address: Address, block: ethereum.Block): TvlEntity {
     tvlEntity.totalSupply = totalSupply
     tvlEntity.price = price
     tvlEntity.value = value
+    tvlEntity.ppfs = ppfs
 
     tvlEntity.createAtBlock = block.number
     tvlEntity.timestamp = block.timestamp

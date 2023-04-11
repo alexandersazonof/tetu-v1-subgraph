@@ -8,6 +8,9 @@ export const SECONDS_OF_YEAR = BigDecimal.fromString('31557600');
 export const YEAR_PERIOD = BigDecimal.fromString('365')
 export const BD_ONE = BigDecimal.fromString('1')
 
+export const BD_18 = BigDecimal.fromString('1000000000000000000');
+export const BI_18 = BigInt.fromString('1000000000000000000');
+
 export const STRATEGY_SPLITTER_PLATFORM = BigInt.fromI32(24);
 
 export function getPriceCalculator(): Address {
@@ -28,4 +31,11 @@ export function getTetuToken(): Address {
   }
   log.warning("NO TETU TOKEN ON NETWORK {}", [dataSource.network()]);
   return Address.zero()
+}
+
+export function getUtilsHelper(): Address {
+  if (dataSource.network() == 'mainnet') {
+    return Address.fromString('0xa281C7B40A9634BCD16B4aAbFcCE84c8F63Aedd0')
+  }
+  return Address.fromString('0xdfB765935D7f4e38641457c431F89d20Db571674')
 }

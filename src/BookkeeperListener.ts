@@ -1,9 +1,9 @@
 import {
   RegisterStrategyEarned,
-  RegisterUserEarned
+  RegisterUserEarned, RegisterVault, RemoveVault
 } from "../generated/templates/BookkeeperTemplate/BookkeeperContract";
 import { fetchVault, loadOrCreateStrategy } from "./types/Strategy";
-import { StrategyEarnedEntity, UserEarnedEntity } from "../generated/schema";
+import { StrategyEarnedEntity, UserEarnedEntity, VaultLogHistoryEntity } from "../generated/schema";
 import { getTokenPrice } from "./utils/PriceUtils";
 import { getTetuToken } from "./utils/Constant";
 import { loadOrCreateVault } from "./types/Vault";
@@ -30,6 +30,10 @@ export function handleRegisterStrategyEarned(event: RegisterStrategyEarned): voi
   }
 }
 
+// ******************************************************************************************************
+//             USER EARNED
+// ******************************************************************************************************
+
 export function handlerRegisterUserEarned(event: RegisterUserEarned): void {
   const id = `${event.params.user.toHex()}-${event.transaction.hash.toHex()}`
   let userEarned = UserEarnedEntity.load(id)
@@ -45,5 +49,51 @@ export function handlerRegisterUserEarned(event: RegisterUserEarned): void {
     userEarned.createAtBlock = event.block.number
     userEarned.timestamp = event.block.timestamp
     userEarned.save()
+  }
+}
+
+// ******************************************************************************************************
+//             REMOVE VAULT
+// ******************************************************************************************************
+
+export function handleRemoveVault(event: RemoveVault): void {
+  const vault = loadOrCreateVault(event.params.value, event.block)
+  vault.active = false
+  vault.save()
+
+  const id = `${vault.id}-${event.transaction.hash.toHex()}`
+  let log = VaultLogHistoryEntity.load(id)
+  if (log == null) {
+    log = new VaultLogHistoryEntity(id);
+
+    log.vault = vault.id
+    log.active = false
+
+    log.createAtBlock = event.block.number
+    log.timestamp = event.block.timestamp
+    log.save()
+  }
+}
+
+// ******************************************************************************************************
+//             ACTIVATE VAULT
+// ******************************************************************************************************
+
+export function handleRegisterVault(event: RegisterVault): void {
+  const vault = loadOrCreateVault(event.params.value, event.block)
+  vault.active = true
+  vault.save()
+
+  const id = `${vault.id}-${event.transaction.hash.toHex()}`
+  let log = VaultLogHistoryEntity.load(id)
+  if (log == null) {
+    log = new VaultLogHistoryEntity(id);
+
+    log.vault = vault.id
+    log.active = true
+
+    log.createAtBlock = event.block.number
+    log.timestamp = event.block.timestamp
+    log.save()
   }
 }

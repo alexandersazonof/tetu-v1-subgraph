@@ -4,7 +4,8 @@ import { fetchDecimals, fetchName, fetchSymbol } from "../utils/ERC20";
 import { VaultContract } from "../../generated/Controller/VaultContract";
 import { loadOrCreateToken } from "./Token";
 import { VaultTemplate } from "../../generated/templates";
-import { UNDEFINED } from "../utils/Constant";
+import { BI_18, UNDEFINED } from "../utils/Constant";
+import { getERC20Symbols } from "../utils/ContractUtils";
 
 
 export function loadOrCreateVault(address: Address, block: ethereum.Block): VaultEntity {
@@ -13,7 +14,7 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
     vaultEntity = new VaultEntity(address.toHex());
 
     vaultEntity.decimals = fetchDecimals(address).toI32();
-    vaultEntity.name = fetchName(address);
+    vaultEntity.name = fetchVaultName(address)
     vaultEntity.symbol = fetchSymbol(address);
 
     vaultEntity.active = true;
@@ -67,4 +68,20 @@ export function fetchRewardRateForToken(address: Address, value: Address): BigIn
   const vault = VaultContract.bind(address)
   const tryRewardRateForToken = vault.try_rewardRateForToken(value)
   return tryRewardRateForToken.reverted ? BigInt.zero() : tryRewardRateForToken.value
+}
+
+export function fetchSharePrice(address: Address): BigInt {
+  const vault = VaultContract.bind(address)
+  const trySharePrice = vault.try_getPricePerFullShare();
+  return trySharePrice.reverted ? BI_18 : trySharePrice.value
+}
+
+export function fetchVaultName(address: Address): string {
+  const values = getERC20Symbols([address])
+
+  if (values.length == 0) {
+    return fetchName(address)
+  }
+
+  return values[0]
 }

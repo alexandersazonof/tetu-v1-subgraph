@@ -28,6 +28,8 @@ dataSources:
           file: ./abis/strategies/StrategyBalancerBPTContract.json
         - name: StrategySplitterContract
           file: ./abis/strategies/StrategySplitter.json
+        - name: UtilsContract
+          file: ./abis/ContractUtils.json
       eventHandlers:
         - event: VaultAndStrategyAdded(address,address)
           handler: handleVaultAndStrategyAdded
@@ -78,6 +80,8 @@ templates:
           file: ./abis/strategies/StrategyBalancerBPTContract.json
         - name: StrategySplitterContract
           file: ./abis/strategies/StrategySplitter.json
+        - name: UtilsContract
+          file: ./abis/ContractUtils.json
       eventHandlers:
         - event: AddedRewardToken(indexed address)
           handler: handleAddedRewardToken
@@ -136,11 +140,17 @@ templates:
           file: ./abis/strategies/StrategyBalancerBPTContract.json
         - name: StrategySplitterContract
           file: ./abis/strategies/StrategySplitter.json
+        - name: UtilsContract
+          file: ./abis/ContractUtils.json
       eventHandlers:
         - event: RegisterStrategyEarned(indexed address,uint256)
           handler: handleRegisterStrategyEarned
         - event: RegisterUserEarned(indexed address,address,address,uint256)
           handler: handlerRegisterUserEarned
+        - event: RemoveVault(address)
+          handler: handleRemoveVault
+        - event: RegisterVault(address)
+          handler: handleRegisterVault
       file: ./src/BookkeeperListener.ts
   - kind: ethereum/contract
     network: matic
@@ -166,6 +176,8 @@ templates:
           file: ./abis/strategies/StrategyBalancerBPTContract.json
         - name: StrategySplitterContract
           file: ./abis/strategies/StrategySplitter.json
+        - name: UtilsContract
+          file: ./abis/ContractUtils.json
       eventHandlers:
         - event: StrategyAdded(address)
           handler: handleStrategyAdded
