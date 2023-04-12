@@ -58,21 +58,6 @@ export function handlerRegisterUserEarned(event: RegisterUserEarned): void {
 
 export function handleRemoveVault(event: RemoveVault): void {
   const vault = loadOrCreateVault(event.params.value, event.block)
-  vault.active = false
-  vault.save()
-
-  const id = `${vault.id}-${event.transaction.hash.toHex()}`
-  let log = VaultLogHistoryEntity.load(id)
-  if (log == null) {
-    log = new VaultLogHistoryEntity(id);
-
-    log.vault = vault.id
-    log.active = false
-
-    log.createAtBlock = event.block.number
-    log.timestamp = event.block.timestamp
-    log.save()
-  }
 }
 
 // ******************************************************************************************************
@@ -81,19 +66,4 @@ export function handleRemoveVault(event: RemoveVault): void {
 
 export function handleRegisterVault(event: RegisterVault): void {
   const vault = loadOrCreateVault(event.params.value, event.block)
-  vault.active = true
-  vault.save()
-
-  const id = `${vault.id}-${event.transaction.hash.toHex()}`
-  let log = VaultLogHistoryEntity.load(id)
-  if (log == null) {
-    log = new VaultLogHistoryEntity(id);
-
-    log.vault = vault.id
-    log.active = true
-
-    log.createAtBlock = event.block.number
-    log.timestamp = event.block.timestamp
-    log.save()
-  }
 }

@@ -1,5 +1,5 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
-import { VaultEntity } from "../../generated/schema";
+import { VaultEntity, VaultLogHistoryEntity } from "../../generated/schema";
 import { fetchDecimals, fetchName, fetchSymbol } from "../utils/ERC20";
 import { VaultContract } from "../../generated/Controller/VaultContract";
 import { loadOrCreateToken } from "./Token";
@@ -31,7 +31,44 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
 
     VaultTemplate.create(address);
   }
+
+  // check is activated
+  isActivatedVault(vaultEntity, block);
+
+  // check name
+  checkName(vaultEntity);
+
   return vaultEntity;
+}
+
+export function checkName(vault: VaultEntity): void {
+  vault.name = fetchName(Address.fromString(vault.id))
+  vault.save()
+}
+
+export function isActivatedVault(vault: VaultEntity, block: ethereum.Block): void {
+  const id = `${vault.id}-${block.number}`
+  let log = VaultLogHistoryEntity.load(id)
+  if (log == null) {
+    const active = fetchActive(Address.fromString(vault.id))
+    log = new VaultLogHistoryEntity(id);
+
+    log.vault = vault.id
+    log.active = active
+
+    log.createAtBlock = block.number
+    log.timestamp = block.timestamp
+    log.save()
+
+    vault.active = active
+    vault.save()
+  }
+}
+
+export function fetchActive(address: Address): boolean {
+  const vault = VaultContract.bind(address)
+  const tryActive = vault.try_active()
+  return tryActive.reverted ? false : tryActive.value;
 }
 
 export function fetchTotalSupply(address: Address): BigInt {
