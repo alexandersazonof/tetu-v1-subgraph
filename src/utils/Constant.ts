@@ -39,3 +39,10 @@ export function getUtilsHelper(): Address {
   }
   return Address.fromString('0xdfB765935D7f4e38641457c431F89d20Db571674')
 }
+
+export function getContractReader(): Address {
+  if (dataSource.network() == 'mainnet') {
+    return Address.fromString('0x6E4D8CAc827B52E7E67Ae8f68531fafa36eaEf0B');
+  }
+  return Address.fromString('0xCa9C8Fba773caafe19E6140eC0A7a54d996030Da');
+}

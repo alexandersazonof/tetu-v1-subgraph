@@ -32,6 +32,9 @@ export function createApyAutoCompound(
     apyAutoCompound.timestamp = block.timestamp
     apyAutoCompound.createAtBlock = block.number
     apyAutoCompound.save()
+
+    vault.aprAutoCompound = apr;
+    vault.save();
   }
 
   return apyAutoCompound;

@@ -26,12 +26,57 @@ type VaultEntity @entity {
   name: String!
   symbol: String!
 
+  strategy: StrategyEntity!
   active: Boolean!
   underlying: TokenEntity!
+  rewardTokens: [TokenEntity!]!
+  assets: [TokenEntity!]!
+
+
+#  PpfsApr?
+#  PpfsAprMonth?
+#  PpfsAprYear?
+  lastShareTimestamp: BigInt!
+  userUniqueCount: BigInt!
+  userActiveCount: BigInt!
+  totalUsers: BigInt!
+  tvl: BigInt!
+  tvlUsd: BigInt!
+  rewardsApr: [BigInt!]!
+  rewardTokensBal: [BigInt!]!
+  aprAutoCompound: BigDecimal!
+  buyBackRatio: BigInt!
+
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultHistoryEntity @entity {
+  # vault-block
+  id: ID!
+
+  decimals: Int!
+  name: String!
+  symbol: String!
+  strategy: StrategyEntity!
+
+  active: Boolean!
+  underlying: TokenEntity!
+  rewardTokens: [TokenEntity!]!
+  assets: [TokenEntity!]!
 
   lastShareTimestamp: BigInt!
   userUniqueCount: BigInt!
   userActiveCount: BigInt!
+  totalUsers: BigInt!
+  tvl: BigInt!
+  tvlUsd: BigInt!
+  rewardsApr: [BigInt!]!
+  rewardTokensBal: [BigInt!]!
+  aprAutoCompound: BigDecimal!
+  buyBackRatio: BigInt!
+
 
   timestamp: BigInt!
   createAtBlock: BigInt!
@@ -45,7 +90,7 @@ type StrategyEntity @entity {
   poolId: String!
   name: String!
   strategies: [StrategyEntity!]!
-  vault: VaultEntity!
+#  vault: VaultEntity!
   timestamp: BigInt!
   createAtBlock: BigInt!
 }

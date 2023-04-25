@@ -18,7 +18,7 @@ export function loadOrCreateStrategy(address: Address, block: ethereum.Block): S
     strategy.timestamp = block.timestamp;
     strategy.name = fetchName(address)
     strategy.strategies = []
-    strategy.vault = loadOrCreateVault(fetchVault(address), block).id
+    // strategy.vault = loadOrCreateVault(fetchVault(address), block).id
 
     if (strategy.platform.equals(STRATEGY_SPLITTER_PLATFORM)) {
       updateStrategy(strategy, block)
@@ -67,4 +67,10 @@ export function fetchVault(address: Address): Address {
   const strategy = StrategySplitterContract.bind(address)
   const tryVault = strategy.try_vault()
   return tryVault.reverted ? Address.zero() : tryVault.value
+}
+
+export function fetchBuyBackRation(address: Address): BigInt {
+  const strategy = StrategySplitterContract.bind(address)
+  const tryVal = strategy.try_buyBackRatio();
+  return tryVal.reverted ? BigInt.zero() : tryVal.value;
 }

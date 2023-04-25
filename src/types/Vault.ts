@@ -1,11 +1,21 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts';
 import { VaultEntity, VaultLogHistoryEntity } from "../../generated/schema";
 import { fetchDecimals, fetchName, fetchSymbol } from "../utils/ERC20";
 import { VaultContract } from "../../generated/Controller/VaultContract";
-import { loadOrCreateToken } from "./Token";
+import { loadOrCreateBatchToken, loadOrCreateToken } from './Token';
 import { VaultTemplate } from "../../generated/templates";
 import { BI_18, UNDEFINED } from "../utils/Constant";
 import { getERC20Symbols } from "../utils/ContractUtils";
+import { fetchBuyBackRation, loadOrCreateStrategy } from './Strategy';
+import {
+  fetchAssets,
+  fetchRewardApr,
+  fetchRewardTokensBal,
+  fetchTvl,
+  fetchTvlUsd,
+  fetchUsers,
+} from '../utils/ContractReader';
+import { createVaultHistory } from './VaultHistory';
 
 
 export function loadOrCreateVault(address: Address, block: ethereum.Block): VaultEntity {
@@ -19,7 +29,7 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
 
     vaultEntity.active = true;
     vaultEntity.underlying = loadOrCreateToken(fetchUnderlying(address), block).id;
-    // vaultEntity.strategy = loadOrCreateStrategy(fetchStrategy(address), block).id;
+    vaultEntity.strategy = loadOrCreateStrategy(fetchStrategy(address), block).id;
 
     vaultEntity.lastShareTimestamp = BigInt.zero()
 
@@ -27,23 +37,44 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
     vaultEntity.timestamp = block.timestamp;
     vaultEntity.userUniqueCount = BigInt.zero()
     vaultEntity.userActiveCount = BigInt.zero()
+
+    vaultEntity.rewardTokens = loadOrCreateBatchToken(fetchRewardTokens(address), block);
+    vaultEntity.assets = loadOrCreateBatchToken(fetchAssets(Address.fromString(vaultEntity.strategy)), block);
+
+    vaultEntity.totalUsers = BigInt.zero();
+    vaultEntity.tvl = BigInt.zero();
+    vaultEntity.tvlUsd = BigInt.zero();
+    vaultEntity.rewardsApr = [];
+    vaultEntity.rewardTokensBal = [];
+    vaultEntity.aprAutoCompound = BigDecimal.zero();
+    vaultEntity.buyBackRatio = fetchBuyBackRation(Address.fromString(vaultEntity.strategy))
+
     vaultEntity.save();
 
     VaultTemplate.create(address);
+  } else {
+    // check is activated
+    isActivatedVault(vaultEntity, block);
+
+    vaultEntity.name = fetchName(Address.fromString(vaultEntity.id))
+
+    vaultEntity.rewardTokens = loadOrCreateBatchToken(fetchRewardTokens(address), block);
+    vaultEntity.assets = loadOrCreateBatchToken(fetchAssets(Address.fromString(vaultEntity.strategy)), block);
+
+    vaultEntity.totalUsers = fetchUsers(address);
+    vaultEntity.tvl = fetchTvl(address);
+    vaultEntity.tvlUsd = fetchTvlUsd(address);
+    vaultEntity.rewardsApr = fetchRewardApr(address);
+    vaultEntity.rewardTokensBal = fetchRewardTokensBal(address);
+    vaultEntity.buyBackRatio = fetchBuyBackRation(Address.fromString(vaultEntity.strategy));
+
+
+    vaultEntity.save()
   }
 
-  // check is activated
-  isActivatedVault(vaultEntity, block);
-
-  // check name
-  checkName(vaultEntity);
+  createVaultHistory(vaultEntity, block);
 
   return vaultEntity;
-}
-
-export function checkName(vault: VaultEntity): void {
-  vault.name = fetchName(Address.fromString(vault.id))
-  vault.save()
 }
 
 export function isActivatedVault(vault: VaultEntity, block: ethereum.Block): void {

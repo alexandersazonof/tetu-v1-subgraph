@@ -16,3 +16,12 @@ export function loadOrCreateToken(address: Address, block: ethereum.Block): Toke
   }
   return token;
 }
+
+export function loadOrCreateBatchToken(addresses: Address[], block: ethereum.Block): string[] {
+  const tokens: string[] = [];
+  for (let i = 0; i < addresses.length; i++) {
+    const token = loadOrCreateToken(addresses[i], block);
+    tokens.push(token.id)
+  }
+  return tokens;
+}

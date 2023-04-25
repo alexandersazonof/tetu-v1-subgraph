@@ -30,6 +30,8 @@ dataSources:
           file: ./abis/strategies/StrategySplitter.json
         - name: UtilsContract
           file: ./abis/ContractUtils.json
+        - name: ContractReaderContract
+          file: ./abis/ContractReader.json
       eventHandlers:
         - event: VaultAndStrategyAdded(address,address)
           handler: handleVaultAndStrategyAdded
@@ -82,6 +84,8 @@ templates:
           file: ./abis/strategies/StrategySplitter.json
         - name: UtilsContract
           file: ./abis/ContractUtils.json
+        - name: ContractReaderContract
+          file: ./abis/ContractReader.json
       eventHandlers:
         - event: AddedRewardToken(indexed address)
           handler: handleAddedRewardToken
@@ -142,6 +146,8 @@ templates:
           file: ./abis/strategies/StrategySplitter.json
         - name: UtilsContract
           file: ./abis/ContractUtils.json
+        - name: ContractReaderContract
+          file: ./abis/ContractReader.json
       eventHandlers:
         - event: RegisterStrategyEarned(indexed address,uint256)
           handler: handleRegisterStrategyEarned
@@ -178,6 +184,8 @@ templates:
           file: ./abis/strategies/StrategySplitter.json
         - name: UtilsContract
           file: ./abis/ContractUtils.json
+        - name: ContractReaderContract
+          file: ./abis/ContractReader.json
       eventHandlers:
         - event: StrategyAdded(address)
           handler: handleStrategyAdded
