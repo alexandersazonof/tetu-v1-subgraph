@@ -13,6 +13,7 @@ import {
 import { loadTvl } from "./types/Tvl";
 import { createApyReward } from "./types/ApyReward";
 import { createUniqueUser, loadActiveUser } from "./types/User";
+import { updateVaultData } from './types/Vault';
 
 // ******************************************************************************************************
 //             TRANSFER
@@ -20,6 +21,7 @@ import { createUniqueUser, loadActiveUser } from "./types/User";
 
 export function handleTransfer(event: Transfer): void  {
   loadTvl(event.address, event.block)
+  updateVaultData(event.address, event.block);
 }
 
 // ******************************************************************************************************

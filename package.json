@@ -4,13 +4,14 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ alexandersazonof/tetu-v1-subgraph",
+    "deploy:polygon": "graph deploy --product hosted-service alexandersazonof/tetu-v1-polygon",
+    "deploy:mainnet": "graph deploy --product hosted-service alexandersazonof/tetu-v1-mainnet",
     "create-local": "graph create --node http://localhost:8020/ alexandersazonof/tetu-v1-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ alexandersazonof/tetu-v1-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 alexandersazonof/tetu-v1-subgraph"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.30.1",
+    "@graphprotocol/graph-cli": "0.48.0",
     "@graphprotocol/graph-ts": "0.27.0"
   }
 }

@@ -48,15 +48,21 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
     vaultEntity.rewardTokensBal = [];
     vaultEntity.aprAutoCompound = BigDecimal.zero();
     vaultEntity.buyBackRatio = fetchBuyBackRation(Address.fromString(vaultEntity.strategy))
+    vaultEntity.ppfsApr = BigInt.zero();
 
     vaultEntity.save();
 
     VaultTemplate.create(address);
-  } else {
-    // check is activated
+  }
+  return vaultEntity;
+}
+
+export function updateVaultData(address: Address, block: ethereum.Block): void {
+  const vaultEntity = loadOrCreateVault(address, block);
+  if (vaultEntity != null) {
     isActivatedVault(vaultEntity, block);
 
-    vaultEntity.name = fetchName(Address.fromString(vaultEntity.id))
+    vaultEntity.name = fetchVaultName(address)
 
     vaultEntity.rewardTokens = loadOrCreateBatchToken(fetchRewardTokens(address), block);
     vaultEntity.assets = loadOrCreateBatchToken(fetchAssets(Address.fromString(vaultEntity.strategy)), block);
@@ -68,13 +74,9 @@ export function loadOrCreateVault(address: Address, block: ethereum.Block): Vaul
     vaultEntity.rewardTokensBal = fetchRewardTokensBal(address);
     vaultEntity.buyBackRatio = fetchBuyBackRation(Address.fromString(vaultEntity.strategy));
 
-
     vaultEntity.save()
+    createVaultHistory(vaultEntity, block);
   }
-
-  createVaultHistory(vaultEntity, block);
-
-  return vaultEntity;
 }
 
 export function isActivatedVault(vault: VaultEntity, block: ethereum.Block): void {

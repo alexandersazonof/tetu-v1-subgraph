@@ -11,7 +11,7 @@ dataSources:
       startBlock: 23942243
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - ControllerEntity
@@ -67,7 +67,7 @@ templates:
       abi: VaultContract
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - VaultEntity
@@ -127,7 +127,7 @@ templates:
       abi: BookkeeperContract
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - VaultEntity
@@ -165,7 +165,7 @@ templates:
       abi: StrategySplitterContract
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - StrategyEntity

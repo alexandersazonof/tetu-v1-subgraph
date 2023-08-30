@@ -33,7 +33,7 @@ type VaultEntity @entity {
   assets: [TokenEntity!]!
 
 
-#  PpfsApr?
+  ppfsApr: BigInt!
 #  PpfsAprMonth?
 #  PpfsAprYear?
   lastShareTimestamp: BigInt!

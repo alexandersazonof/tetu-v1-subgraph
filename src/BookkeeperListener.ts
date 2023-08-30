@@ -57,7 +57,9 @@ export function handlerRegisterUserEarned(event: RegisterUserEarned): void {
 // ******************************************************************************************************
 
 export function handleRemoveVault(event: RemoveVault): void {
-  const vault = loadOrCreateVault(event.params.value, event.block)
+  const vault = loadOrCreateVault(event.params.value, event.block);
+  vault.active = false;
+  vault.save();
 }
 
 // ******************************************************************************************************
@@ -66,4 +68,6 @@ export function handleRemoveVault(event: RemoveVault): void {
 
 export function handleRegisterVault(event: RegisterVault): void {
   const vault = loadOrCreateVault(event.params.value, event.block)
+  vault.active = true;
+  vault.save();
 }
